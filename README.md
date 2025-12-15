@@ -1,182 +1,118 @@
-📊 Plaid Function-Calling Financial Assistant
+# 📊 Plaid Function-Calling Financial Assistant
 
-A two-stage Gemini LLM pipeline that routes questions, fetches (fake) Plaid data, and returns natural-language financial insights.
+A two-stage Gemini LLM pipeline that routes user questions, fetches (mock) Plaid data, and returns natural-language financial insights.
 
-🚀 Overview
+---
 
-This project is a prototype of an AI-powered personal finance assistant that uses Gemini function calling to decide when and how to fetch bank transaction data. It demonstrates an agent-like workflow:
+## 🚀 Overview
 
-Router LLM → Should I call Plaid?
+This project is a prototype of an AI-powered personal finance assistant that uses Gemini function calling to decide when and how to fetch bank transaction data.
 
-Tool Call → Fetch fake Plaid data
+It demonstrates an agent-like workflow:
 
-Analyst LLM → Summarize, analyze, and answer
+- **Router LLM** → Decide if Plaid data is needed  
+- **Tool Call** → Fetch fake Plaid transactions  
+- **Analyst LLM** → Analyze and answer  
 
-The system currently uses a fake Plaid API (mock data) for low-friction prototyping.
-Later, the mock API can be replaced with real Plaid SDK calls.
+> ⚠️ The system currently uses a **fake Plaid API (mock data)** for friction-free prototyping.  
+> This can later be replaced with real Plaid SDK calls.
 
-This project is ideal for learning:
+---
 
-LLM routing logic
+## 🎯 What This Project Is For
 
-Gemini function-calling patterns
+- Learning LLM routing logic  
+- Gemini function-calling patterns  
+- Two-stage LLM architecture (planner → executor)  
+- Parsing and analyzing financial transaction data  
+- Debugging agent pipelines with global state  
+- Building a base for real banking API integration  
 
-Two-stage LLM architecture (planner → executor)
+---
 
-Parsing, transforming, and analyzing financial data
+## ✨ Key Features
 
-Building a foundation that later integrates banking APIs
-
-Debugging agent pipelines with global state
-
-✨ Key Features
-🔹 1. Smart Question Routing (LLM #1)
+### 🔹 1. Smart Question Routing (LLM #1)
 
 The first model decides:
 
-If the question can be answered using Plaid data, it triggers a function call
+- If the question requires Plaid data → triggers a function call  
+- Otherwise → returns `CANNOT_ANSWER_WITH_PLAID`
 
-If not, it returns CANNOT_ANSWER_WITH_PLAID
+**Examples:**
 
-Examples:
+| User Question                                   | Router Output                  |
+|-----------------------------------------------|--------------------------------|
+| How much did I spend on groceries last month? | Calls `get_plaid_transactions` |
+| What is the S&P 500?                           | CANNOT_ANSWER_WITH_PLAID       |
+| Show my last 10 Starbucks charges              | Calls `get_plaid_transactions` |
 
-Question	Router Output
-“How much did I spend on groceries last month?”	Calls get_plaid_transactions
-“What is the S&P500?”	CANNOT_ANSWER_WITH_PLAID
-“Show my last 10 Starbucks charges.”	Calls get_plaid_transactions
-🔹 2. Fake Plaid API (Prototype Only)
+---
 
-Instead of calling real Plaid, this project provides a mock Plaid function that returns:
+### 🔹 2. Fake Plaid API (Prototype Only)
 
-Dummy accounts
+Instead of calling real Plaid endpoints, this project includes a mock Plaid function that returns:
 
-Dummy transactions
+- Dummy accounts  
+- Dummy transactions  
+- Realistic merchants, categories, dates, and amounts  
 
-Realistic categories, merchants, dates, and amounts
+This enables end-to-end testing without OAuth or credentials.
 
-This allows the LLM to run end-to-end without needing credentials or OAuth setup.
+---
 
-🔹 3. Analyst LLM (LLM #2)
+### 🔹 3. Analyst LLM (LLM #2)
 
 After transactions are retrieved, a second LLM run:
 
-Analyzes spending
+- Groups transactions by category  
+- Computes totals  
+- Detects patterns  
+- Answers the question clearly  
 
-Groups transactions by category
+**Example Output:**
 
-Computes totals
+> “You spent $97.50 at restaurants between Oct 1–5, mostly at Uber Eats and Starbucks.”
 
-Answers the question naturally and clearly
+---
 
-Example output:
+### 🔹 4. Global State Debugger
 
-“You spent $97.50 at restaurants between Oct 1–5, mostly at Uber Eats and Starbucks.”
+The system maintains a global dictionary containing:
 
-🔹 4. Global State Debugger
+- Last user question  
+- Router LLM raw output  
+- Function call arguments  
+- Mock Plaid results  
+- Analyst prompt  
+- Final LLM answer  
 
-The system keeps a global dictionary storing:
+This makes the pipeline transparent and easy to debug.
 
-Last user question
+---
 
-Router LLM raw output
+## 🧩 Architecture
 
-Function call arguments
-
-Mock Plaid results
-
-Analysis prompt
-
-Final LLM answer
-
-This makes the pipeline fully transparent and easy to debug.
-
-🧩 Architecture
 User Question
-      │
-      ▼
-┌──────────────────────────┐
-│   LLM #1: Router Model   │
-│  (Decides: Plaid or Not) │
-└──────────┬───────────────┘
-           │
-   if Plaid relevant
-           ▼
-┌──────────────────────────┐
-│  get_plaid_transactions  │   ← Fake Plaid API
-└──────────┬───────────────┘
-           │
-           ▼
-┌──────────────────────────┐
-│   LLM #2: Analyst Model  │
-│ (Explain + Summarize)    │
-└──────────────────────────┘
-           │
-           ▼
-      Final Answer
-
-🛠 Tech Stack
-
-Python 3.10+
-
-Google Gemini API (google-genai)
-
-Function Calling
-
-Mock Plaid API
-
-CLI interface
-
-📁 File Structure
-project/
 │
-├── plaid_assistant.py     # Main script (router, tools, analyst, orchestrator)
-├── README.md              # Documentation
-└── requirements.txt       # Dependencies
-
-▶️ Usage
-
-Install dependencies:
-
-pip install google-genai python-dotenv
-
-
-Set your Gemini API key:
-
-export GEMINI_API_KEY="your_key_here"
-
-
-Run the assistant:
-
-python plaid_assistant.py
-
-
-Example interaction:
-
-You: How much did I spend on restaurants last month?
-Assistant: You spent $97.50…
-
-🔮 Future Enhancements
-
-Replace fake Plaid API with real Plaid SDK calls
-
-Add more tools:
-
-get_accounts()
-
-get_balances()
-
-summarize_expenses()
-
-detect_recurring_subscriptions()
-
-Add a web UI (Streamlit or React)
-
-Add multi-tool planning
-
-Add budgets + alerts
-
-Add multi-account support
-
-📘 Summary
-
-This project is a clean learning template for building agent-like LLM systems with tool calling, decomposition, and financial data analysis. It provides an extensible foundation for a full personal finance AI assistant.
+▼
+┌──────────────────────────┐
+│ LLM #1: Router Model │
+│ (Decides: Plaid or Not) │
+└──────────┬───────────────┘
+│
+Plaid Relevant?
+│
+▼
+┌──────────────────────────┐
+│ get_plaid_transactions │ ← Fake Plaid API
+└──────────┬───────────────┘
+│
+▼
+┌──────────────────────────┐
+│ LLM #2: Analyst Model │
+│ (Analyze + Summarize) │
+└──────────────────────────┘
+│
+▼
+Final Answer
