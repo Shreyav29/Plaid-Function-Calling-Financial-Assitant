@@ -91,21 +91,19 @@ This makes the pipeline transparent and easy to debug.
 
 ## 🧩 Architecture
 
-User Question
-  |
-  v
-Router LLM (LLM #1)
-  |
-  |-- if NOT Plaid related --> CANNOT_ANSWER_WITH_PLAID
-  |
-  |-- if Plaid related
-  v
-get_plaid_transactions (Mock Plaid API)
-  |
-  v
-Analyst LLM (LLM #2)
-  |
-  v
+User Question  
+↓  
+Router LLM (LLM #1)  
+- If NOT Plaid related → `CANNOT_ANSWER_WITH_PLAID`  
+- If Plaid related → continue  
+
+↓  
+get_plaid_transactions (Mock Plaid API)  
+
+↓  
+Analyst LLM (LLM #2)  
+
+↓  
 Final Natural-Language Answer
 
 ---
