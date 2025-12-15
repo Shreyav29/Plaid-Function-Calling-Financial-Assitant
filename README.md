@@ -106,7 +106,7 @@ Analyst LLM (LLM #2)
 ↓  
 Final Natural-Language Answer
 
-![Architecture Diagram](assets/architecture.png)
+![Architecture Diagram](architecture.png)
 
 ---
 
