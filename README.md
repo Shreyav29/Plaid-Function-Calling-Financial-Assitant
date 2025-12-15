@@ -94,17 +94,19 @@ This makes the pipeline transparent and easy to debug.
 User Question
   |
   v
-LLM #1: Router Model (Decides: Plaid or Not)
+Router LLM (LLM #1)
   |
-  | if Plaid relevant
+  |-- if NOT Plaid related --> CANNOT_ANSWER_WITH_PLAID
+  |
+  |-- if Plaid related
   v
-get_plaid_transactions (Fake Plaid API)
+get_plaid_transactions (Mock Plaid API)
   |
   v
-LLM #2: Analyst Model (Analyze + Summarize)
+Analyst LLM (LLM #2)
   |
   v
-Final Answer
+Final Natural-Language Answer
 
 ---
 
